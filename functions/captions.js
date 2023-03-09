@@ -4,8 +4,9 @@ const fs = require('fs');
 const YTDlpWrap = require('yt-dlp-wrap').default;
 
 
-exports.handler = async (event, context, callback) => {
+exports.handler = function(event, context, callback) {
   const videoId = event.queryStringParameters.videoId;
+  const ytDlpPath = `${__dirname}/yt-dlp`;
   const filePath = `tmp/captions-${videoId}`;
   const args = [
     '--write-auto-sub',
@@ -15,70 +16,70 @@ exports.handler = async (event, context, callback) => {
     filePath
   ];
 
-  await YTDlpWrap.downloadFromGithub(
-    'bin/yt-dlp',
-    '2020.06.16.1',
-    'win32'
-  );
+  // await YTDlpWrap.downloadFromGithub(
+  //   'bin/yt-dlp',
+  //   '2020.06.16.1',
+  //   'win32'
+  // );
   
-  const ytDlpWrap = new YTDlpWrap('bin/yt-dlp');
+  // const ytDlpWrap = new YTDlpWrap('bin/yt-dlp');
 
-  let ytDlpEventEmitter = ytDlpWrap
-    .exec(args)
-    .on('progress', (progress) =>
-        console.log(
-            progress.percent,
-            progress.totalSize,
-            progress.currentSpeed,
-            progress.eta
-        )
-    )
-    .on('ytDlpEvent', (eventType, eventData) =>
-        console.log(eventType, eventData)
-    )
-    .on('error', (error) => console.error(error))
-    .on('close', () => {
-      console.log('all done')
+  // let ytDlpEventEmitter = ytDlpWrap
+  //   .exec(args)
+  //   .on('progress', (progress) =>
+  //       console.log(
+  //           progress.percent,
+  //           progress.totalSize,
+  //           progress.currentSpeed,
+  //           progress.eta
+  //       )
+  //   )
+  //   .on('ytDlpEvent', (eventType, eventData) =>
+  //       console.log(eventType, eventData)
+  //   )
+  //   .on('error', (error) => console.error(error))
+  //   .on('close', () => {
+  //     console.log('all done')
 
-      const file = fs.readFileSync(filePath + '.en-en-US.vtt');
-      fs.unlinkSync(filePath + '.en-en-US.vtt');
+  //     const file = fs.readFileSync(filePath + '.en-en-US.vtt');
+  //     fs.unlinkSync(filePath + '.en-en-US.vtt');
   
+  //     return callback(null, {
+  //       statusCode: 200,
+  //       headers: {
+  //         'Content-Type': 'text/vtt',
+  //         'Content-Disposition': `attachment; filename="${videoId}.vtt"`
+  //       },
+  //       body: file.toString('base64'),
+  //       isBase64Encoded: true
+  //     });
+  //   })
+  // }
+
+  const process = spawn( ytDlpPath, args);
+
+  process.on('exit', (code) => {
+    if (code !== 0) {
+      console.error(`yt-dlp process exited with code ${code}`);
       return callback(null, {
-        statusCode: 200,
-        headers: {
-          'Content-Type': 'text/vtt',
-          'Content-Disposition': `attachment; filename="${videoId}.vtt"`
-        },
-        body: file.toString('base64'),
-        isBase64Encoded: true
+        statusCode: 500,
+        body: JSON.stringify({
+          error: `yt-dlp process exited with code ${code}`
+        })
       });
-    })
-  }
+    }
 
-//   const process = spawn('yt-dlp', args);
+    const file = fs.readFileSync(filePath + '.en-en-US.vtt');
+    fs.unlinkSync(filePath + '.en-en-US.vtt');
 
-//   process.on('exit', (code) => {
-//     if (code !== 0) {
-//       console.error(`yt-dlp process exited with code ${code}`);
-//       return callback(null, {
-//         statusCode: 500,
-//         body: JSON.stringify({
-//           error: `yt-dlp process exited with code ${code}`
-//         })
-//       });
-//     }
-
-//     const file = fs.readFileSync(filePath + '.en-en-US.vtt');
-//     fs.unlinkSync(filePath + '.en-en-US.vtt');
-
-//     return callback(null, {
-//       statusCode: 200,
-//       headers: {
-//         'Content-Type': 'text/vtt',
-//         'Content-Disposition': `attachment; filename="${videoId}.vtt"`
-//       },
-//       body: file.toString('base64'),
-//       isBase64Encoded: true
-//     });
-//   });
-// };
+    return callback(null, {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'text/vtt',
+        'Content-Disposition': `attachment; filename="${videoId}.vtt"`
+      },
+      body: file.toString('base64'),
+      isBase64Encoded: true
+    });
+  });
+};
