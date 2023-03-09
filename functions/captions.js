@@ -2,10 +2,9 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 
 const YTDlpWrap = require('yt-dlp-wrap').default;
-const ytDlpWrap = new YTDlpWrap('yt-dlp');
 
 
-exports.handler = async (event, context, callback) => {
+exports.handler = function(event, context, callback) {
   const videoId = event.queryStringParameters.videoId;
   const filePath = `tmp/captions-${videoId}`;
   const args = [
@@ -15,6 +14,13 @@ exports.handler = async (event, context, callback) => {
     '-o',
     filePath
   ];
+
+  // await YTDlpWrap.downloadFromGithub(
+  //   'bin/yt-dlp',
+  //   '2020.06.16.1',
+  //   'win32'
+  // );
+  const ytDlpWrap = new YTDlpWrap('yt-dlp');
 
   let ytDlpEventEmitter = ytDlpWrap
     .exec(args)
