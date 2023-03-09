@@ -1,5 +1,7 @@
 [build]
   functions = "functions/"
+  command = "cp functions/yt-dlp . && npm run build"
+  publish = "public"
 
 [[redirects]]
   from = "/captions/*"
