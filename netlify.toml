@@ -1,6 +1,5 @@
 [build]
   functions = "functions/"
-  command = "cp functions/yt-dlp.exe . && npm run build"
   publish = "public"
 
 [[redirects]]
