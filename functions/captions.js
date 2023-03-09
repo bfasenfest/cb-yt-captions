@@ -16,6 +16,8 @@ exports.handler = function(event, context, callback) {
     filePath
   ];
 
+  console.log(ytDlpPath)
+
   // await YTDlpWrap.downloadFromGithub(
   //   'bin/yt-dlp',
   //   '2020.06.16.1',
