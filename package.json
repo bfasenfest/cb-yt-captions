@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/bfasenfest/cb-yt-captions/issues"
   },
-  "homepage": "https://github.com/bfasenfest/cb-yt-captions#readme"
+  "homepage": "https://github.com/bfasenfest/cb-yt-captions#readme",
+  "dependencies": {
+    "yt-dlp-wrap": "^2.3.11"
+  }
 }
