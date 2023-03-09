@@ -2,7 +2,7 @@ const { exec } = require('child_process');
 
 exports.handler = function(event, context, callback) {
   const videoId = event.queryStringParameters.videoId;
-  const command = `yt-dlp --write-auto-sub --skip-download https://www.youtube.com/watch?v=${videoId}`;
+  const command = `yt-dlp.exe --write-auto-sub --skip-download https://www.youtube.com/watch?v=${videoId}`;
 
   exec(command, (error, stdout, stderr) => {
     if (error) {
