@@ -5,7 +5,7 @@ const YTDlpWrap = require('yt-dlp-wrap').default;
 const ytDlpWrap = new YTDlpWrap('yt-dlp');
 
 
-exports.handler = function(event, context, callback) {
+exports.handler = async (event, context, callback) => {
   const videoId = event.queryStringParameters.videoId;
   const filePath = `tmp/captions-${videoId}`;
   const args = [
