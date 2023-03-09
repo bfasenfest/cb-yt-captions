@@ -4,7 +4,7 @@ const fs = require('fs');
 const YTDlpWrap = require('yt-dlp-wrap').default;
 
 
-exports.handler = function(event, context, callback) {
+exports.handler = async (event, context, callback) => {
   const videoId = event.queryStringParameters.videoId;
   const filePath = `tmp/captions-${videoId}`;
   const args = [
@@ -15,12 +15,13 @@ exports.handler = function(event, context, callback) {
     filePath
   ];
 
-  // await YTDlpWrap.downloadFromGithub(
-  //   'bin/yt-dlp',
-  //   '2020.06.16.1',
-  //   'win32'
-  // );
-  const ytDlpWrap = new YTDlpWrap('yt-dlp');
+  await YTDlpWrap.downloadFromGithub(
+    'bin/yt-dlp',
+    '2020.06.16.1',
+    'win32'
+  );
+  
+  const ytDlpWrap = new YTDlpWrap('bin/yt-dlp');
 
   let ytDlpEventEmitter = ytDlpWrap
     .exec(args)
