@@ -6,7 +6,7 @@ const YTDlpWrap = require('yt-dlp-wrap').default;
 
 exports.handler = function(event, context, callback) {
   const videoId = event.queryStringParameters.videoId;
-  const ytDlpPath = `${__dirname}/yt-dlp`;
+  const ytDlpPath = `yt-dlp`;
   const filePath = `tmp/captions-${videoId}`;
   const args = [
     '--write-auto-sub',
