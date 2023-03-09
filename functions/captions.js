@@ -1,39 +1,41 @@
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
+const fs = require('fs');
 
 exports.handler = function(event, context, callback) {
   const videoId = event.queryStringParameters.videoId;
-  const command = `yt-dlp --write-auto-sub --skip-download https://www.youtube.com/watch?v=${videoId}`;
+  const filePath = `tmp/captions-${videoId}`;
+  const args = [
+    '--write-auto-sub',
+    '--skip-download',
+    `https://www.youtube.com/watch?v=${videoId}`,
+    '-o',
+    filePath
+  ];
 
-  exec(command, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error: ${error.message}`);
+  const process = spawn('yt-dlp', args);
+
+  process.on('exit', (code) => {
+    if (code !== 0) {
+      console.error(`yt-dlp process exited with code ${code}`);
       return callback(null, {
         statusCode: 500,
         body: JSON.stringify({
-          error: error.message
+          error: `yt-dlp process exited with code ${code}`
         })
       });
     }
 
-    if (stderr) {
-      console.error(`Error: ${stderr}`);
-      return callback(null, {
-        statusCode: 500,
-        body: JSON.stringify({
-          error: stderr
-        })
-      });
-    }
-
-    console.log(`stdout: ${stdout}`);
+    const file = fs.readFileSync(filePath + '.en-en-US.vtt');
+    fs.unlinkSync(filePath + '.en-en-US.vtt');
 
     return callback(null, {
       statusCode: 200,
       headers: {
-        'Content-Type': 'text/plain',
-        'Content-Disposition': 'attachment; filename="captions.vtt"'
+        'Content-Type': 'text/vtt',
+        'Content-Disposition': `attachment; filename="${videoId}.vtt"`
       },
-      body: stdout
+      body: file.toString('base64'),
+      isBase64Encoded: true
     });
   });
 };
