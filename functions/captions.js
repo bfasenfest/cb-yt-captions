@@ -58,7 +58,7 @@ exports.handler = function(event, context, callback) {
   //   })
   // }
 
-  const process = spawn( ytDlpPath, args);
+  const process = spawn( ytDlpPath, args, { cwd: '.' });
 
   process.on('exit', (code) => {
     if (code !== 0) {
