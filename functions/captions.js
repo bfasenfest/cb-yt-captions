@@ -2,7 +2,7 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 import { getSubtitles } from 'youtube-captions-scraper';
 
-const YTDlpWrap = require('yt-dlp-wrap').default;
+// const YTDlpWrap = require('yt-dlp-wrap').default;
 
 
 exports.handler = function(event, context, callback) {
