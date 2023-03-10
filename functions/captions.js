@@ -17,8 +17,6 @@ exports.handler = function(event, context, callback) {
     filePath
   ];
 
-  console.log(ytDlpPath)
-
   return getSubtitles({
     videoID: videoId , // youtube video id
     lang: 'en' // default: `en`
@@ -27,6 +25,7 @@ exports.handler = function(event, context, callback) {
     captions.forEach(caption => {
       text += caption.text + ' '
     })
+    console.log(text)
     return {
       statusCode: 200,
       body: JSON.stringify({ transcript: text}),
