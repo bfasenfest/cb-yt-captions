@@ -23,7 +23,15 @@ exports.handler = function(event, context, callback) {
     videoID: videoId , // youtube video id
     lang: 'en' // default: `en`
   }).then(captions => {
-    console.log(captions);
+    let text = ''
+    captions.forEach(caption => {
+      text += caption.text + ' '
+    })
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ transcript: text}),
+    };
+
   });
 
   // await YTDlpWrap.downloadFromGithub(
