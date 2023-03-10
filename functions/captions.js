@@ -29,6 +29,9 @@ exports.handler = function(event, context, callback) {
     return {
       statusCode: 200,
       body: JSON.stringify({ transcript: text}),
+      headers: {
+        "access-control-allow-origin": "*",
+      }
     };
 
   });
