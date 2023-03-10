@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/bfasenfest/cb-yt-captions#readme",
   "dependencies": {
+    "youtube-captions-scraper": "^2.0.0",
     "yt-dlp-wrap": "^2.3.11"
   }
 }
