@@ -19,7 +19,7 @@ exports.handler = function(event, context, callback) {
 
   console.log(ytDlpPath)
 
-  getSubtitles({
+  return getSubtitles({
     videoID: videoId , // youtube video id
     lang: 'en' // default: `en`
   }).then(captions => {
